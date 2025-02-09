@@ -10,5 +10,5 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///music_app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.json.compact = False
 
-db = SQLalchemy(app)
+db = SQLAlchemy(app)
 migrate = Migrate(app,db)
