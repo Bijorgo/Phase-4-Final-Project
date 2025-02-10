@@ -28,7 +28,7 @@ def user_login():
     username = user_entry["username"]
     password = user_entry["password"]
     if not username or not password:
-        return jsonify({"error": "Username and password are required for login."})
+        return jsonify({"error": "Username and password are required for login."}), 400
     user=User.query.filter_by(username=username).first()
     if not user or user.password != password:
         return jsonify({"error": "Inavalid username or password."}), 401
