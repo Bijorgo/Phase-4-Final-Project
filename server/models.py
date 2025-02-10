@@ -33,3 +33,7 @@ class Mixtape(db.Model):
 class MixtapeItem(db.Model):
     __tablename__="MixtapeItems"
     id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String, default="unlistened", nullable=False)
+    # Forgeign Keys
+    mixtape_id = db.Column(db.Integer, db.ForeignKey('mixtapes.id'))
+    song_id = db.Column(db.Integer, db.ForeignKey('songs.id'))
