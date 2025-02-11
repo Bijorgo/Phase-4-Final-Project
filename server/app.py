@@ -107,7 +107,18 @@ def delete_song(song_id):
     except Exception as exception:
         return jsonify({"error": str(exception)}), 500
 
+#MIXTAPES
+#GET/mixtapes
+#GET/mixtapes/id
+#POST/mixtapes
+#PATCH/mixtapes/:id
+#DELETE/mixtapes/:id
 
+#MIXTAPEITEMS
+#GET/mixtape-items
+#POST/mixtape-items
+#PATCH/mixtapes-items/:id
+#DELETE/mixtape-items/:id
     
 
     
