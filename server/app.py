@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from server.config import app, db
 from sqlalchemy.exc import IntegrityError
-from server.models import User, Song
+from server.models import User, Song, Mixtape, MixtapeItem
 
 # POST /register: Register a new user. (Tested using PostMan - 200)
 
@@ -108,18 +108,138 @@ def delete_song(song_id):
         return jsonify({"error": str(exception)}), 500
 
 #MIXTAPES
-#GET/mixtapes
-#GET/mixtapes/id
-#POST/mixtapes
-#PATCH/mixtapes/:id
-#DELETE/mixtapes/:id
+# GET /mixtapes: Get all mixtapes
+@app.get("/mixtapes")
+def get_mixtapes():
+    mixtapes = Mixtape.query.all()
+    if not mixtapes:
+        return jsonify({"error": "No mixtapes found."}), 404
+    mixtape_list = [mixtape.to_dict() for mixtape in mixtapes]
+    return jsonify({"mixtapes": mixtape_list}), 200
+
+# GET /mixtapes/:id: Retrieve a specific mixtape's information
+@app.get("/mixtapes/<int:mixtape_id>")
+def get_mixtape(mixtape_id):
+    mixtape = Mixtape.query.filter_by(id=mixtape_id).first()
+    if not mixtape:
+        return jsonify({"error": "Mixtape not found."}), 404
+    return jsonify(mixtape.to_dict()), 200
+
+# POST /mixtapes: Create a new mixtape
+@app.post("/mixtapes")
+def create_mixtape():
+    new_mixtape = request.json
+    if not new_mixtape.get("title") or not new_mixtape.get("user_id"):
+        return jsonify({"error": "Title and user_id are required fields."}), 400
+    try:
+        mixtape = Mixtape(
+            title=new_mixtape["title"],
+            description=new_mixtape.get("description", ""),
+            user_id=new_mixtape["user_id"]
+        )
+        db.session.add(mixtape)
+        db.session.commit()
+        return jsonify(mixtape.to_dict()), 201
+    except Exception as exception:
+        return jsonify({"error": str(exception)}), 500
+
+# PATCH /mixtapes/:id: Update a mixtape
+@app.patch("/mixtapes/<int:mixtape_id>")
+def update_mixtape(mixtape_id):
+    updated_mixtape = request.json
+    mixtape = Mixtape.query.filter_by(id=mixtape_id).first()
+    if not mixtape:
+        return jsonify({"error": "Mixtape not found."}), 404
+    
+    if "title" in updated_mixtape:
+        mixtape.title = updated_mixtape["title"]
+    if "description" in updated_mixtape:
+        mixtape.description = updated_mixtape["description"]
+    if "user_id" in updated_mixtape:
+        mixtape.user_id = updated_mixtape["user_id"]
+
+    try:
+        db.session.commit()
+        return jsonify(mixtape.to_dict())
+    except Exception as exception:
+        return jsonify({"error": str(exception)}), 500
+
+# DELETE /mixtapes/:id: Delete a mixtape
+@app.delete("/mixtapes/<int:mixtape_id>")
+def delete_mixtape(mixtape_id):
+    mixtape = Mixtape.query.filter_by(id=mixtape_id).first()
+    if not mixtape:
+        return jsonify({"error": "Mixtape not found."}), 404
+    try:
+        db.session.delete(mixtape)
+        db.session.commit()
+        return jsonify({"message": "Mixtape deleted successfully!"}), 200
+    except Exception as exception:
+        return jsonify({"error": str(exception)}), 500
+
 
 #MIXTAPEITEMS
-#GET/mixtape-items
-#POST/mixtape-items
-#PATCH/mixtapes-items/:id
-#DELETE/mixtape-items/:id
+# GET /mixtape-items: Get all mixtape items
+@app.get("/mixtape-items")
+def get_mixtape_items():
+    mixtape_items = MixtapeItem.query.all()
+    if not mixtape_items:
+        return jsonify({"error": "No mixtape items found."}), 404
+    mixtape_item_list = [mixtape_item.to_dict() for mixtape_item in mixtape_items]
+    return jsonify({"mixtape_items": mixtape_item_list}), 200
+
+# POST /mixtape-items: Add a new song to a mixtape
+@app.post("/mixtape-items")
+def create_mixtape_item():
+    new_item = request.json
+    if not new_item.get("mixtape_id") or not new_item.get("song_id"):
+        return jsonify({"error": "Mixtape ID and Song ID are required fields."}), 400
+    try:
+        mixtape_item = MixtapeItem(
+            mixtape_id=new_item["mixtape_id"],
+            song_id=new_item["song_id"],
+            status=new_item.get("status", "unlistened")
+        )
+        db.session.add(mixtape_item)
+        db.session.commit()
+        return jsonify(mixtape_item.to_dict()), 201
+    except Exception as exception:
+        return jsonify({"error": str(exception)}), 500
+
+# PATCH /mixtape-items/:id: Update a mixtape item
+@app.patch("/mixtape-items/<int:mixtape_item_id>")
+def update_mixtape_item(mixtape_item_id):
+    updated_item = request.json
+    mixtape_item = MixtapeItem.query.filter_by(id=mixtape_item_id).first()
+    if not mixtape_item:
+        return jsonify({"error": "Mixtape item not found."}), 404
     
+    if "status" in updated_item:
+        mixtape_item.status = updated_item["status"]
+    if "mixtape_id" in updated_item:
+        mixtape_item.mixtape_id = updated_item["mixtape_id"]
+    if "song_id" in updated_item:
+        mixtape_item.song_id = updated_item["song_id"]
+
+    try:
+        db.session.commit()
+        return jsonify(mixtape_item.to_dict())
+    except Exception as exception:
+        return jsonify({"error": str(exception)}), 500
+
+# DELETE /mixtape-items/:id: Delete a mixtape item
+@app.delete("/mixtape-items/<int:mixtape_item_id>")
+def delete_mixtape_item(mixtape_item_id):
+    mixtape_item = MixtapeItem.query.filter_by(id=mixtape_item_id).first()
+    if not mixtape_item:
+        return jsonify({"error": "Mixtape item not found."}), 404
+    try:
+        db.session.delete(mixtape_item)
+        db.session.commit()
+        return jsonify({"message": "Mixtape item deleted successfully!"}), 200
+    except Exception as exception:
+        return jsonify({"error": str(exception)}), 500
+
 
     
 
