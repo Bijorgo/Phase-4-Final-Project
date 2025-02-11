@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///music_app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.json.compact = False
+app.config['JSON_COMPACT'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
