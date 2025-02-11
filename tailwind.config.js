@@ -1,0 +1,14 @@
+// tailwind.config.js
+module.exports = {
+    content: [
+      // Paths to all of your template files
+      './src/**/*.{html,js,jsx,ts,tsx}', // Adjust the paths to match your project structure
+    ],
+    theme: {
+      extend: {
+        // Customize your theme here
+      },
+    },
+    plugins: [],
+  };
+  
