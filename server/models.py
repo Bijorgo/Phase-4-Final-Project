@@ -62,5 +62,5 @@ class MixtapeItem(db.Model):
     serializer_rules = ('-mixtapes', '-songs') # im not 100% sure if this is what we want
 
     def to_dict(self):
-        return {"id": self.id, "status": self.status, "mixtape_id": self.mixtape_id, "song_id": self.song_id, "mixtapes": self.mixtapes, "songs": self.songs}
+        return {"id": self.id, "status": self.status, "mixtape_id": self.mixtape_id, "song_id": self.song_id}
     
