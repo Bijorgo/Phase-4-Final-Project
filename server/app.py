@@ -110,7 +110,7 @@ def delete_song(song_id):
 
 #GET/songs/search: Search for songs by attribute?
     
-@app.get("songs/search")
+@app.get("/songs/search")
 def search_songs():
     name = request.args.get("name")
     artist = request.args.get("artist")
@@ -126,7 +126,8 @@ def search_songs():
 
     songs = query.all()
     if not songs:
-        return jsonify({"error": "Sorry, no songs found matching these specifications."}),
+        return jsonify({"error": "Sorry, no songs found matching these specifications."})
     song_data = [{"id": song.id, "name": song.name, "artist": song.artist, "album": song.album, "duration": song.duraton} for song in songs ]
     return jsonify({"songs": song_data}), 200
+
 
