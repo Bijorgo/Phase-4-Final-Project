@@ -4,7 +4,7 @@ function Registration() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = async (event: React.FormEvent) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (!username || !password) {
             alert("Username and password are required fields.")
@@ -55,3 +55,5 @@ function Registration() {
                 </div>
             )
         }
+    
+    export default Registration
