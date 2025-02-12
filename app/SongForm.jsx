@@ -6,7 +6,7 @@ function SongForm() {
     const [album, setAlbum] = useState("");
     const [duration, setDuration] = useState("");
 
-    const handleSubmit = async (event: React.FormEvent) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (!name || !artist) {
             alert("Song name and artist are required feilds.");
